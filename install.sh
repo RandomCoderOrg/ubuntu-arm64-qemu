@@ -15,7 +15,7 @@ fi
 function download()
 {
     mkdir -p "$WORK_DIR"
-    ./plugins/download.sh "${link}"    
+    bash plugins/download.sh "${link}"    
 }
 
 function setup_dependencies()
