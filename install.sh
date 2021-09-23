@@ -21,10 +21,10 @@ function download()
 function setup_dependencies()
 {
     if command -v qemu-system-aarch64 >> /dev/null;  then
-       $SUDO apt install qemu-system-aarch64 -y
+       $SUDO apt install qemu-system-aarch64 -y || die "Couldn't install 'qemu-system-aarch64'"
     fi
     if command -v lz4 >> /dev/null;  then
-       $SUDO apt install lz4 -y
+       $SUDO apt install lz4 -y || die "Couldn't install 'lz4'"
     fi
 }
 
