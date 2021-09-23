@@ -5,6 +5,7 @@ source ./plugins/colors-and-fun.sh
 
 link="https://github.com/RandomCoderOrg/ubuntu-arm64-qemu/releases/download/test-v01/qemu-ubuntu-18-test.tgz"
 WORK_DIR="${HOME}/hippo-qemu"
+curpwd="$(pwd)"
 
 if [ "$(id -u)" != 0 ]; then
     if command -v sudo >> /dev/null 2>&1; then
@@ -14,8 +15,10 @@ fi
 
 function download()
 {
-    mkdir -p "$WORK_DIR"
-    bash plugins/download.sh "${link}"    
+    if [ ! -f "${HOME}/$(basename ${link})" ]; then
+        bash plugins/download.sh "${link}"
+        mv "$(basename ${link})" "$HOME"
+    fi
 }
 
 function setup_dependencies()
@@ -30,28 +33,41 @@ function setup_dependencies()
 
 function start_extract_sequence()
 {
-    cd "$WORK_DIR" || die "failed.."
-    tar -xf "$WORK_DIR/$(basename ${link})"
-    FILE_BUFFER="$(ls "$WORK_DIR")"
+    tar -xf "${HOME}"/"$(basename ${link})" -C "$HOME"
 
-    for item in $FILE_BUFFER; do
-        lz4 -d "$item" "$(cut -d "." -f -2 "$item")"
+    cd "$WORK_DIR" || die "Failed"
+    for item in $(ls); do
+        lz4 -d "$item" "$(echo "$item" | cut -d "." -f -2)" || die "failed.."
         rm -rf "$item"
     done
-    cd ..
+    # cd "${curpwd}" || die "failed.."
 }
+
+function cleanup()
+{
+    msg "\nCleanUp.."
+    lwarn "Removing $WORK_DIR"
+    rm -rvf "$WORK_DIR"
+    msg "Done.."
+}
+
+trap 'cleanup; exit 1;' HUP INT TERM
 
 shout "making sure of dependencies..."
 setup_dependencies
 lshout "Done"
+
 shout "Downloading..."
 download
 msg "Done"
+
 shout "Starting extraction..."
 lshout "This may take a while"
 start_extract_sequence
 msg "Done"
+
 msg "Setting up boot.sh.."
-cp boot.sh "$WORK_DIR"
+cp "${curpwd}"/boot.sh "$WORK_DIR"
 msg "Done"
+
 shout "Now you can start ubuntu with command ${GREEN}${WORK_DIR}/boot.sh${DC}"
