@@ -13,5 +13,4 @@ qemu-system-aarch64 \
     -drive file="${HOME}"/hippo-new-qemu/ubuntu-image.img,if=none,id=drive0,cache=writeback \
     -drive file="${HOME}"/hippo-new-qemu/flash0.img,format=raw,if=pflash \
     -drive file="${HOME}"/hippo-new-qemu/flash1.img,format=raw,if=pflash \
-    -device virtio-blk,drive=drive0,bootindex=0 \
-    -accel tcg,thread=multi
+    -device virtio-blk,drive=drive0,bootindex=0

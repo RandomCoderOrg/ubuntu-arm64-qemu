@@ -4,7 +4,7 @@
 source ./plugins/colors-and-fun.sh
 
 link="https://github.com/RandomCoderOrg/ubuntu-arm64-qemu/releases/download/test-v01/qemu-ubuntu-18-test.tgz"
-WORK_DIR="${HOME}/hippo-qemu"
+WORK_DIR="${HOME}/hippo-new-qemu"
 curpwd="$(pwd)"
 
 if [ "$(id -u)" != 0 ]; then
